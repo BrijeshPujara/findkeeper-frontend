@@ -13,7 +13,7 @@ export interface ItemCreateRequest {
 }
 
 export interface ClaimSubmitRequest {
-  itemId?: string;
+  itemId: string;
   claimantName: string;
   claimantEmail: string;
   description: string;

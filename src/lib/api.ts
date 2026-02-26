@@ -25,17 +25,17 @@ export const apiClient = {
   createItem: (payload: ItemCreateRequest): Promise<unknown> =>
     request<unknown>('/items', 'POST', {
       category: payload.category,
-      locationFound: payload.locationFound,
-      foundAtIso: payload.foundAtIso,
+      location_found: payload.locationFound,
+      found_at: payload.foundAtIso,
       notes: payload.notes,
     }),
   submitClaim: (payload: ClaimSubmitRequest): Promise<unknown> =>
     request<unknown>('/claims', 'POST', {
-      itemId: payload.itemId,
-      claimantName: payload.claimantName,
-      claimantEmail: payload.claimantEmail,
+      item_id: payload.itemId,
+      claimant_name: payload.claimantName,
+      claimant_email: payload.claimantEmail,
       description: payload.description,
     }),
   searchItems: (payload: SearchRequest): Promise<unknown> =>
-    request<unknown>(`/search?query=${encodeURIComponent(payload.query)}`, 'GET'),
+    request<unknown>(`/search?q=${encodeURIComponent(payload.query)}`, 'GET'),
 };
