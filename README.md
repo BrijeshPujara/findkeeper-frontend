@@ -32,6 +32,8 @@ npm run start
 
 ```bash
 npm run typecheck
+npm test
+npm run test:coverage
 ```
 
 ## Next implementation slices
