@@ -1,8 +1,10 @@
 import { getApiBaseUrl } from '../config/env';
 import type {
   ApiHealthResponse,
+  ClaimResponse,
   ClaimSubmitRequest,
   ItemCreateRequest,
+  PatchClaimRequest,
   SearchItemsResponse,
   SearchRequest,
 } from '../types/contracts';
@@ -11,7 +13,7 @@ type JsonBody = Record<string, unknown>;
 
 const request = async <TResponse>(
   path: string,
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | 'PATCH',
   body?: JsonBody,
   options: { headers?: Record<string, string> } = {}
 ): Promise<TResponse> => {
@@ -41,12 +43,19 @@ export const apiClient = {
       found_at: payload.foundAtIso,
       notes: payload.notes,
     }, idempotencyKey ? { headers: { 'idempotency-key': idempotencyKey } } : {}),
-  submitClaim: (payload: ClaimSubmitRequest): Promise<unknown> =>
+  submitClaim: (payload: ClaimSubmitRequest, idempotencyKey?: string): Promise<unknown> =>
     request<unknown>('/claims', 'POST', {
       item_id: payload.itemId,
       claimant_name: payload.claimantName,
       claimant_email: payload.claimantEmail,
       description: payload.description,
+    }, idempotencyKey ? { headers: { 'idempotency-key': idempotencyKey } } : {}),
+  getClaimById: (claimId: string): Promise<ClaimResponse> => request<ClaimResponse>(`/claims/${claimId}`, 'GET'),
+  patchClaim: (claimId: string, payload: PatchClaimRequest): Promise<ClaimResponse> =>
+    request<ClaimResponse>(`/claims/${claimId}`, 'PATCH', {
+      action: payload.action,
+      reason: payload.reason,
+      notes: payload.notes,
     }),
   searchItems: (payload: SearchRequest): Promise<SearchItemsResponse> =>
     request<SearchItemsResponse>(`/search?q=${encodeURIComponent(payload.query)}`, 'GET'),

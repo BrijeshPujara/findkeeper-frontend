@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import { Button, Card, StatusValue, TextField } from '../components/ui';
+import { Button, Card, StatusChip, StatusValue, TextField } from '../components/ui';
 import { useStaffIntakeContext } from '../features/staff-intake/StaffIntakeContext';
 import { styles } from './styles/StaffIntakeScreen.styles';
 
@@ -23,7 +23,16 @@ export const StaffItemCaptureScreen = () => {
   return (
     <Card>
       <Text style={styles.heading}>Staff intake</Text>
-      <Text style={styles.text}>Create a found item with required fields and deterministic validation.</Text>
+      <Text style={styles.text}>Log new found items with structured details and deterministic validation.</Text>
+
+      <Card muted>
+        <Text style={styles.sectionHeading}>Photo evidence</Text>
+        <Text style={styles.text}>Attach item images for verification and downstream review workflows.</Text>
+        <Button label="Attach image (next step)" onPress={() => undefined} variant="secondary" />
+      </Card>
+
+      <Text style={styles.sectionHeading}>Item details</Text>
+      <StatusChip label="AI assist preview" tone="info" />
 
       <TextField
         label="Category"

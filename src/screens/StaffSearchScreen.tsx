@@ -1,4 +1,5 @@
-import { StyleSheet, Text } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button, Card, EmptyState, StatusChip, StatusValue, TextField } from '../components/ui';
 import { useStaffIntakeContext } from '../features/staff-intake/StaffIntakeContext';
 import { styles } from './styles/StaffIntakeScreen.styles';
@@ -24,11 +25,20 @@ const getStatusTone = (status: string) => {
 export const StaffSearchScreen = () => {
   const { searchQuery, searchLoading, searchStatusMessage, searchResults, setSearchQuery, runSearch } =
     useStaffIntakeContext();
+  const [statusFilter, setStatusFilter] = useState<'all' | 'unclaimed' | 'claim_pending' | 'resolved'>('all');
+
+  const filteredResults = useMemo(() => {
+    if (statusFilter === 'all') {
+      return searchResults;
+    }
+
+    return searchResults.filter((item) => item.status.toLowerCase() === statusFilter);
+  }, [searchResults, statusFilter]);
 
   return (
     <Card>
       <Text style={styles.heading}>Staff search</Text>
-      <Text style={styles.text}>Search existing items (FE-104 baseline).</Text>
+      <Text style={styles.text}>Search inventory and review items by status.</Text>
 
       <TextField
         label="Search query"
@@ -40,13 +50,34 @@ export const StaffSearchScreen = () => {
 
       <Button label="Search items" onPress={runSearch} loading={searchLoading} variant="secondary" />
 
+      <View style={styles.filterWrap}>
+        {[
+          { label: 'All', value: 'all' },
+          { label: 'Unclaimed', value: 'unclaimed' },
+          { label: 'Pending', value: 'claim_pending' },
+          { label: 'Resolved', value: 'resolved' },
+        ].map((filter) => (
+          <Pressable
+            key={filter.value}
+            style={[styles.filterChip, statusFilter === filter.value ? styles.filterChipActive : null]}
+            onPress={() => setStatusFilter(filter.value as 'all' | 'unclaimed' | 'claim_pending' | 'resolved')}
+          >
+            <Text style={statusFilter === filter.value ? styles.filterChipTextActive : styles.filterChipText}>
+              {filter.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
       <StatusValue label="Search status" value={searchStatusMessage} />
+      <Text style={styles.resultCount}>{filteredResults.length} item(s)</Text>
 
-      {searchResults.length === 0 ? <EmptyState message="No search results yet." /> : null}
+      {filteredResults.length === 0 ? <EmptyState message="No items found matching your filters." /> : null}
 
-      {searchResults.map((item) => (
+      {filteredResults.map((item) => (
         <Card key={item.id} style={localStyles.resultCard} muted>
           <Text style={styles.resultTitle}>{item.category}</Text>
+          <Text style={styles.resultMeta}>#{item.id}</Text>
           <Text style={styles.resultText}>ID: {item.id}</Text>
           <Text style={styles.resultText}>Location: {item.location_found}</Text>
           <Text style={styles.resultText}>Found at: {new Date(item.found_at).toLocaleString()}</Text>

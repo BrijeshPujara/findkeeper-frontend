@@ -46,6 +46,57 @@ export const styles = StyleSheet.create({
     color: '#4b5563',
     lineHeight: 20,
   },
+  sectionHeading: {
+    color: '#111827',
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  filterWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 4,
+  },
+  filterChip: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    backgroundColor: '#ffffff',
+  },
+  filterChipActive: {
+    backgroundColor: '#111827',
+    borderColor: '#111827',
+  },
+  filterChipText: {
+    color: '#4b5563',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  filterChipTextActive: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  resultCount: {
+    color: '#6b7280',
+    fontSize: 12,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  selectedCard: {
+    borderColor: '#111827',
+    borderWidth: 1,
+  },
+  statusMessage: {
+    color: '#1f2937',
+    marginTop: 6,
+  },
   label: {
     color: '#111827',
     fontWeight: '600',
@@ -109,6 +160,10 @@ export const styles = StyleSheet.create({
   resultTitle: {
     color: '#111827',
     fontWeight: '700',
+  },
+  resultMeta: {
+    color: '#6b7280',
+    fontSize: 12,
   },
   resultText: {
     color: '#374151',

@@ -131,6 +131,102 @@ describe('apiClient', () => {
     });
   });
 
+  test('submitClaim sends idempotency-key header when provided', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: { id: 'claim-2' } }),
+    } as Response);
+
+    await apiClient.submitClaim(
+      {
+        itemId: 'item-2',
+        claimantName: 'Maya',
+        claimantEmail: 'maya@example.com',
+        description: 'Blue case with camera scratch',
+      },
+      'claim-1234567890abcdef'
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith('http://api.test/claims', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'idempotency-key': 'claim-1234567890abcdef',
+      },
+      body: JSON.stringify({
+        item_id: 'item-2',
+        claimant_name: 'Maya',
+        claimant_email: 'maya@example.com',
+        description: 'Blue case with camera scratch',
+      }),
+    });
+  });
+
+  test('getClaimById calls GET /claims/{claimId} and returns claim payload', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          item_id: 'item-2',
+          claimant_name: 'Maya',
+          claimant_email: 'maya@example.com',
+          description: 'Blue case with camera scratch',
+          status: 'under_review',
+          created_at: '2026-02-27T15:00:00.000Z',
+          updated_at: '2026-02-27T16:00:00.000Z',
+        },
+      }),
+    } as Response);
+
+    const result = await apiClient.getClaimById('3fa85f64-5717-4562-b3fc-2c963f66afa6');
+
+    expect(fetchMock).toHaveBeenCalledWith('http://api.test/claims/3fa85f64-5717-4562-b3fc-2c963f66afa6', {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: undefined,
+    });
+    expect(result.data.status).toBe('under_review');
+  });
+
+  test('patchClaim calls PATCH /claims/{claimId} with transition payload', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        data: {
+          id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+          item_id: 'item-2',
+          claimant_name: 'Maya',
+          claimant_email: 'maya@example.com',
+          description: 'Blue case with camera scratch',
+          status: 'approved',
+          created_at: '2026-02-27T15:00:00.000Z',
+          updated_at: '2026-02-27T16:00:00.000Z',
+        },
+      }),
+    } as Response);
+
+    const result = await apiClient.patchClaim('3fa85f64-5717-4562-b3fc-2c963f66afa6', {
+      action: 'approve',
+      notes: 'Ownership validated',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith('http://api.test/claims/3fa85f64-5717-4562-b3fc-2c963f66afa6', {
+      method: 'PATCH',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'approve',
+        reason: undefined,
+        notes: 'Ownership validated',
+      }),
+    });
+    expect(result.data.status).toBe('approved');
+  });
+
   test('throws descriptive error when backend response is not ok', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: false,
@@ -141,5 +237,19 @@ describe('apiClient', () => {
     await expect(apiClient.searchItems({ query: 'w' })).rejects.toThrow(
       'API GET /search?q=w failed (400): bad request'
     );
+  });
+
+  test('patchClaim throws descriptive error when backend transition fails', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: false,
+      status: 409,
+      text: async () => 'invalid transition',
+    } as Response);
+
+    await expect(
+      apiClient.patchClaim('3fa85f64-5717-4562-b3fc-2c963f66afa6', {
+        action: 'approve',
+      })
+    ).rejects.toThrow('API PATCH /claims/3fa85f64-5717-4562-b3fc-2c963f66afa6 failed (409): invalid transition');
   });
 });
