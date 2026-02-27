@@ -57,6 +57,36 @@ describe('apiClient', () => {
     });
   });
 
+  test('createItem sends idempotency-key header when provided', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: { id: 'item-2' } }),
+    } as Response);
+
+    await apiClient.createItem(
+      {
+        category: 'phone',
+        locationFound: 'Lobby',
+        foundAtIso: '2026-02-27T15:00:00.000Z',
+      },
+      'item-1234567890abcdef'
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith('http://api.test/items', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'idempotency-key': 'item-1234567890abcdef',
+      },
+      body: JSON.stringify({
+        category: 'phone',
+        location_found: 'Lobby',
+        found_at: '2026-02-27T15:00:00.000Z',
+        notes: undefined,
+      }),
+    });
+  });
+
   test('searchItems uses q query parameter expected by backend', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: true,

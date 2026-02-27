@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Text } from 'react-native';
+import { Button, Card, StatusValue, TextField } from '../components/ui';
 import { styles } from './styles/ClaimantSearchScreen.styles';
 
 export const ClaimantSearchScreen = () => {
@@ -17,23 +18,20 @@ export const ClaimantSearchScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Card>
       <Text style={styles.heading}>Claimant search</Text>
       <Text style={styles.text}>This screen maps to FE-201/202 and BK-201+ flows.</Text>
 
-      <TextInput
+      <TextField
+        label="Search"
         placeholder="e.g. black wallet, gate B, Tuesday"
-        style={styles.input}
         value={search}
         onChangeText={setSearch}
       />
 
-      <Pressable style={styles.button} onPress={runSearch}>
-        <Text style={styles.buttonText}>Search items</Text>
-      </Pressable>
+      <Button label="Search items" onPress={runSearch} />
 
-      <Text style={styles.statusLabel}>Status</Text>
-      <Text style={styles.statusValue}>{status}</Text>
-    </View>
+      <StatusValue label="Status" value={status} />
+    </Card>
   );
 };

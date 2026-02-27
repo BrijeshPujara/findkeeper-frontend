@@ -22,3 +22,21 @@ export interface ClaimSubmitRequest {
 export interface SearchRequest {
   query: string;
 }
+
+export interface ItemSummary {
+  id: string;
+  category: string;
+  location_found: string;
+  found_at: string;
+  status: string;
+}
+
+export interface SearchItemsResponse {
+  data: ItemSummary[];
+  pagination?: {
+    page: number;
+    page_size: number;
+    total: number;
+    total_pages?: number;
+  };
+}

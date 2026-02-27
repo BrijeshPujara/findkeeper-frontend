@@ -1,13 +1,25 @@
 import { getApiBaseUrl } from '../config/env';
-import type { ApiHealthResponse, ClaimSubmitRequest, ItemCreateRequest, SearchRequest } from '../types/contracts';
+import type {
+  ApiHealthResponse,
+  ClaimSubmitRequest,
+  ItemCreateRequest,
+  SearchItemsResponse,
+  SearchRequest,
+} from '../types/contracts';
 
 type JsonBody = Record<string, unknown>;
 
-const request = async <TResponse>(path: string, method: 'GET' | 'POST', body?: JsonBody): Promise<TResponse> => {
+const request = async <TResponse>(
+  path: string,
+  method: 'GET' | 'POST',
+  body?: JsonBody,
+  options: { headers?: Record<string, string> } = {}
+): Promise<TResponse> => {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     method,
     headers: {
       'content-type': 'application/json',
+      ...options.headers,
     },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -22,13 +34,13 @@ const request = async <TResponse>(path: string, method: 'GET' | 'POST', body?: J
 
 export const apiClient = {
   getHealth: (): Promise<ApiHealthResponse> => request<ApiHealthResponse>('/health', 'GET'),
-  createItem: (payload: ItemCreateRequest): Promise<unknown> =>
+  createItem: (payload: ItemCreateRequest, idempotencyKey?: string): Promise<unknown> =>
     request<unknown>('/items', 'POST', {
       category: payload.category,
       location_found: payload.locationFound,
       found_at: payload.foundAtIso,
       notes: payload.notes,
-    }),
+    }, idempotencyKey ? { headers: { 'idempotency-key': idempotencyKey } } : {}),
   submitClaim: (payload: ClaimSubmitRequest): Promise<unknown> =>
     request<unknown>('/claims', 'POST', {
       item_id: payload.itemId,
@@ -36,6 +48,6 @@ export const apiClient = {
       claimant_email: payload.claimantEmail,
       description: payload.description,
     }),
-  searchItems: (payload: SearchRequest): Promise<unknown> =>
-    request<unknown>(`/search?q=${encodeURIComponent(payload.query)}`, 'GET'),
+  searchItems: (payload: SearchRequest): Promise<SearchItemsResponse> =>
+    request<SearchItemsResponse>(`/search?q=${encodeURIComponent(payload.query)}`, 'GET'),
 };

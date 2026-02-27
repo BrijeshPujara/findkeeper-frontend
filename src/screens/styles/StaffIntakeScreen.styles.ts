@@ -1,6 +1,35 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  routeSwitcherWrap: {
+    marginBottom: 12,
+  },
+  staffRouteControl: {
+    flexDirection: 'row',
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    marginBottom: 12,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  staffRouteButton: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  staffRouteButtonActive: {
+    backgroundColor: '#111827',
+  },
+  staffRouteText: {
+    color: '#111827',
+    fontWeight: '600',
+  },
+  staffRouteTextActive: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
   container: {
     backgroundColor: '#ffffff',
     borderRadius: 14,
@@ -17,9 +46,36 @@ export const styles = StyleSheet.create({
     color: '#4b5563',
     lineHeight: 20,
   },
+  label: {
+    color: '#111827',
+    fontWeight: '600',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: '#ffffff',
+  },
+  notesInput: {
+    minHeight: 72,
+    textAlignVertical: 'top',
+  },
+  errorText: {
+    color: '#b91c1c',
+    marginTop: -6,
+  },
   button: {
     marginTop: 6,
     backgroundColor: '#111827',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  secondaryButton: {
+    marginTop: 6,
+    backgroundColor: '#374151',
     borderRadius: 10,
     paddingVertical: 12,
     alignItems: 'center',
@@ -35,5 +91,26 @@ export const styles = StyleSheet.create({
   },
   statusValue: {
     color: '#1f2937',
+  },
+  sectionDivider: {
+    height: 1,
+    backgroundColor: '#e5e7eb',
+    marginVertical: 8,
+  },
+  resultCard: {
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#f9fafb',
+    gap: 2,
+  },
+  resultTitle: {
+    color: '#111827',
+    fontWeight: '700',
+  },
+  resultText: {
+    color: '#374151',
   },
 });

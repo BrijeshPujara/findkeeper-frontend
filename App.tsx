@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useMemo, useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Card, ScreenHeader, SegmentedControl } from './src/components/ui';
 import { ClaimantSearchScreen } from './src/screens/ClaimantSearchScreen';
 import { StaffIntakeScreen } from './src/screens/StaffIntakeScreen';
 import { getApiBaseUrl } from './src/config/env';
@@ -11,23 +12,23 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Findkeeper MVP</Text>
-      <Text style={styles.subtitle}>Backend: {apiBaseUrl}</Text>
+      <ScreenHeader
+        title="Findkeeper"
+        subtitle="Prototype-aligned UX baseline for staff intake and claimant journeys."
+      />
 
-      <View style={styles.segmentControl}>
-        <Pressable
-          style={[styles.segmentButton, journey === 'staff' ? styles.segmentButtonActive : null]}
-          onPress={() => setJourney('staff')}
-        >
-          <Text style={journey === 'staff' ? styles.segmentTextActive : styles.segmentText}>Staff</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.segmentButton, journey === 'claimant' ? styles.segmentButtonActive : null]}
-          onPress={() => setJourney('claimant')}
-        >
-          <Text style={journey === 'claimant' ? styles.segmentTextActive : styles.segmentText}>Claimant</Text>
-        </Pressable>
-      </View>
+      <Card style={styles.switchCard}>
+        <Text style={styles.switchTitle}>Choose workspace</Text>
+        <SegmentedControl
+          options={[
+            { label: 'Staff Console', value: 'staff' },
+            { label: 'Claimant Portal', value: 'claimant' },
+          ]}
+          value={journey}
+          onChange={setJourney}
+        />
+        <Text style={styles.switchMeta}>API: {apiBaseUrl}</Text>
+      </Card>
 
       {journey === 'staff' ? <StaffIntakeScreen /> : <ClaimantSearchScreen />}
       <StatusBar style="auto" />
@@ -42,40 +43,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 16,
+    gap: 12,
   },
-  title: {
-    fontSize: 28,
+  switchCard: {
+    gap: 10,
+  },
+  switchTitle: {
+    fontSize: 16,
     fontWeight: '700',
-    marginBottom: 4,
   },
-  subtitle: {
+  switchMeta: {
     color: '#4b5563',
-    marginBottom: 16,
-  },
-  segmentControl: {
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    marginBottom: 12,
-    padding: 4,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-  },
-  segmentButton: {
-    flex: 1,
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  segmentButtonActive: {
-    backgroundColor: '#111827',
-  },
-  segmentText: {
-    color: '#111827',
-    fontWeight: '600',
-  },
-  segmentTextActive: {
-    color: '#ffffff',
-    fontWeight: '600',
   },
 });
