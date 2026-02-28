@@ -5,6 +5,17 @@
 - Owner: Product + Frontend Engineering
 - Status: Execution-ready
 
+## Execution Mode (Temporary)
+
+- Mode: MVP foundation first
+- Effective date: 2026-02-28
+- Included: auth reliability, core staff/claimant E2E flows, contract alignment, repeatable testability.
+- Deferred: white-label expansion and non-critical feature work until core flow stability is proven.
+
+## Status Tracking
+
+- Foundation focus ticket: `docs/.tickets-local/fe-000-program-focus-and-auth-stabilization.md`
+
 ## Goals
 
 - Build a minimal, high-utility frontend that consumes stable backend contracts.
@@ -37,6 +48,13 @@ Lock user flows, API integration contracts, and frontend architecture baseline b
 - Request: define complete staff and claimant user journeys with success/failure states.
 - Output artifact: `docs/.tickets-local/fe-001-experience-map-flow-contracts.md`.
 - Dependencies: backend BK-002.
+
+#### FE-000 Program Focus and Auth Stabilization
+
+- Request: enforce scope freeze and complete reliable auth + E2E core journeys before expansion.
+- Output artifact: `docs/.tickets-local/fe-000-program-focus-and-auth-stabilization.md`.
+- Status: in progress (2026-02-28).
+- Dependencies: FE-002, FE-003, FE-101, backend BK-003.
 
 #### FE-002 App Architecture Baseline
 
