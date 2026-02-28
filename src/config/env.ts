@@ -8,3 +8,13 @@ export const getApiBaseUrl = (): string => {
 
   return value.replace(/\/$/, '');
 };
+
+export const getApiBearerToken = (): string | undefined => {
+  const value = process.env.EXPO_PUBLIC_API_BEARER_TOKEN;
+
+  if (!value || value.trim().length === 0) {
+    return undefined;
+  }
+
+  return value.trim();
+};

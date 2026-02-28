@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from '../config/env';
+import { getApiBaseUrl, getApiBearerToken } from '../config/env';
 import type {
   ApiHealthResponse,
   ClaimResponse,
@@ -17,10 +17,13 @@ const request = async <TResponse>(
   body?: JsonBody,
   options: { headers?: Record<string, string> } = {}
 ): Promise<TResponse> => {
+  const bearerToken = getApiBearerToken();
+
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
     method,
     headers: {
       'content-type': 'application/json',
+      ...(bearerToken ? { authorization: `Bearer ${bearerToken}` } : {}),
       ...options.headers,
     },
     body: body ? JSON.stringify(body) : undefined,

@@ -1,7 +1,9 @@
 jest.mock('../config/env', () => ({
   getApiBaseUrl: jest.fn(() => 'http://api.test'),
+  getApiBearerToken: jest.fn(() => undefined),
 }));
 
+import { getApiBearerToken } from '../config/env';
 import { apiClient } from './api';
 
 describe('apiClient', () => {
@@ -10,6 +12,26 @@ describe('apiClient', () => {
   beforeEach(() => {
     fetchMock.mockReset();
     global.fetch = fetchMock;
+    (getApiBearerToken as jest.Mock).mockReturnValue(undefined);
+  });
+
+  test('adds Authorization header when bearer token is configured', async () => {
+    (getApiBearerToken as jest.Mock).mockReturnValue('token-abc');
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ message: 'ok', routeKey: 'GET /health', stage: 'dev', timestamp: '2026-01-01T00:00:00.000Z' }),
+    } as Response);
+
+    await apiClient.getHealth();
+
+    expect(fetchMock).toHaveBeenCalledWith('http://api.test/health', {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+        authorization: 'Bearer token-abc',
+      },
+      body: undefined,
+    });
   });
 
   test('getHealth calls GET /health and returns parsed JSON', async () => {
